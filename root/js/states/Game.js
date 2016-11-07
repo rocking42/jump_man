@@ -60,7 +60,7 @@ MrHop.GameState = {
     this.player2.play('running');
 
     // hard code first platform
-    this.current_platform = new MrHop.Platform(this.game, this.floorPool, 8, 0, 280, this.levelSpeed);
+    this.current_platform = new MrHop.Platform(this.game, this.floorPool, 12, 0, 280, this.levelSpeed);
     // create a pool of platforms and add those platforms to the group
     this.platformPool1.add(this.current_platform);
 
@@ -124,18 +124,18 @@ MrHop.GameState = {
       //velocity does not change
       this.player.body.velocity.x = 0;
     }
-
+    console.log(Math.floor(this.game.input.y));
     // adds the keyboard configuration will apply touch configuration soon
-    if(this.cursors.left.isDown) {
+    if(this.cursors.left.isDown || (this.game.input.activePointer.isDown && this.game.input.y > (this.game.height/2))) {
       this.playerJump();
     }
-    else if(this.cursors.left.isUp) {
+    else if(this.cursors.left.isUp || (this.game.input.activePointer.isUp && this.game.input.y > (this.game.height/2))) {
       this.isJumping1 = false;
     }
-    if(this.cursors.right.isDown) {
+    if(this.cursors.right.isDown || (this.game.input.activePointer.isDown && this.game.input.y < (this.game.height/2) && (this.game.input.y > 10))) {
       this.player2Jump();
     }
-    else if(this.cursors.right.isUp) {
+    else if(this.cursors.right.isUp || (this.game.input.activePointer.isUp && this.game.input.y < (this.game.height/2))) {
       this.isJumping2 =false;
     }
 
@@ -205,107 +205,6 @@ MrHop.GameState = {
     }
   },
   loadLevel: function() {
-    this.levelData = {
-      platforms: [
-        {
-          separation: 0,
-          y: 280,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y: 280,
-          numTiles: 6
-        },
-        {
-          separation: 100,
-          y: 280,
-          numTiles: 3
-        },
-        {
-          separation: 50,
-          y: 200,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y: 200,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y: 250,
-          numTiles: 8
-        },
-        {
-          separation: 50,
-          y: 250,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y: 250,
-          numTiles: 3
-        },
-        {
-          separation: 50,
-          y: 250,
-          numTiles: 5
-        },
-        {
-          separation: 50,
-          y: 250,
-          numTiles: 3
-        },
-        {
-          separation: 50,
-          y: 250,
-          numTiles: 2
-        }
-      ],
-      platformsI: [
-        {
-          separation: 50,
-          y: 40,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y:40,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y: 40,
-          numTiles: 6
-        },
-        {
-          separation: 50,
-          y: 40,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y: 40,
-          numTiles: 6
-        },
-        {
-          separation: 50,
-          y: 40,
-          numTiles: 4
-        },
-        {
-          separation: 50,
-          y: 40,
-          numTiles: 6
-        },
-        {
-          separation: 50,
-          y: 40,
-          numTiles: 4
-        }
-      ]
-    };
 
     this.currentIndex = 0;
     this.currentIndexI = 0;
@@ -314,30 +213,93 @@ MrHop.GameState = {
     this.createPlatformI();
   },
   createPlatform: function() {
-    var nextPlatformdata = this.levelData.platforms[this.currentIndex];
+    var nextPlatformdata = this.generatePlatform();
 
 
     if(nextPlatformdata) {
       console.log("hi");
-      this.current_platform = new MrHop.Platform(this.game, this.floorPool, nextPlatformdata.numTiles, this.game.world.width + nextPlatformdata.separation, nextPlatformdata.y, this.levelSpeed );
+
+      this.current_platform = this.platformPool1.getFirstDead();
+
+      if(!this.current_platform) {
+        this.current_platform = new MrHop.Platform(this.game, this.floorPool, nextPlatformdata.numTiles, this.game.world.width + nextPlatformdata.separation, nextPlatformdata.y, this.levelSpeed );
+      }
+      else {
+        this.current_platform.prepare(nextPlatformdata.numTiles, this.game.world.width + nextPlatformdata.separation, nextPlatformdata.y, this.levelSpeed );
+      }
 
       this.platformPool1.add(this.current_platform);
 
-      this.currentIndex++;
+      // this.currentIndex++;
     }
 
   },
   createPlatformI: function() {
-    var nextIPlatformdata = this.levelData.platformsI[this.currentIndexI];
+    var nextIPlatformdata = this.generatePlatformI();
 
     if(nextIPlatformdata) {
       console.log("hello");
-      this.current_platformI1 = new MrHop.PlatformInverse(this.game, this.floorPool2, nextIPlatformdata.numTiles, this.game.world.width + nextIPlatformdata.separation, nextIPlatformdata.y, this.levelSpeed );
+
+      this.current_platformI1 = this.platformPool2.getFirstDead();
+
+      if(!this.current_platformI1) {
+        this.current_platformI1 = new MrHop.PlatformInverse(this.game, this.floorPool2, nextIPlatformdata.numTiles, this.game.world.width + nextIPlatformdata.separation, nextIPlatformdata.y, this.levelSpeed );
+      }
+      else {
+        this.current_platformI1.prepare(nextIPlatformdata.numTiles, this.game.world.width + nextIPlatformdata.separation, nextIPlatformdata.y, this.levelSpeed );
+      }
+
+
 
       this.platformPool2.add(this.current_platformI1);
 
-      this.currentIndexI++;
+      // this.currentIndexI++;
     }
+  },
+  generatePlatform: function() {
+    var data = {};
+    console.log("happy1");
+    //distance from previously
+    var minSeparation = 60;
+    var maxSeparation = 140;
+    data.separation = minSeparation + Math.random() * (maxSeparation - minSeparation);
+    //y in regards to previous
+    var minDiffY = -120;
+    var maxDiffY = 120;
+    data.y = 280 - (Math.random() * 80);
+    // data.y = Math.max(240, data.y);
+    // data.y = Math.min(this.game.world.height - 50, data.y);
+
+    //number of tiles
+    var minTiles = 1;
+    var maxTiles = 5;
+    data.numTiles= minTiles + Math.random() * (maxTiles - minTiles);
+
+
+    return data;
+  },
+  generatePlatformI: function() {
+    var data = {};
+    console.log("happy");
+    //distance from previously
+    var minSeparation = 60;
+    var maxSeparation = 100;
+    data.separation = minSeparation + Math.random() * (maxSeparation - minSeparation);
+    //y in regards to previous
+    var minDiffY = 0;
+    var maxDiffY = 0;
+    data.y = 40 + Math.random() * 40;
+    // data.y = this.current_platformI1.y + (minDiffY + Math.random() * (maxDiffY - minDiffY));
+    // data.y = Math.max(200, data.y);
+    // data.y = Math.min(this.game.world.height - 50, 40);
+
+    //number of tiles
+    var minTiles = 3;
+    var maxTiles = 5;
+    data.numTiles= minTiles + Math.random() * (maxTiles - minTiles);
+
+
+    return data;
   }
 
 };
