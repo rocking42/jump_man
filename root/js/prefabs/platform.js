@@ -1,6 +1,6 @@
 var MrHop = MrHop || {};
 
-MrHop.Platform = function(game, floorPool, numTiles, x, y) {
+MrHop.Platform = function(game, floorPool, numTiles, x, y, speed) {
   Phaser.Group.call(this, game);
   // define the tile size
   this.tileSize = 40;
@@ -8,7 +8,7 @@ MrHop.Platform = function(game, floorPool, numTiles, x, y) {
   this.enableBody = true;
   this.floorPool = floorPool;
   // call and pass the parameters into the prepare function
-  this.prepare(numTiles, x, y);
+  this.prepare(numTiles, x, y, speed);
   // define a loop that adds tiles for each loop
 };
 // create a new platform method to be called in the game
@@ -17,8 +17,10 @@ MrHop.Platform.prototype = Object.create(Phaser.Group.prototype);
 MrHop.Platform.prototype.constructor = MrHop.Platform;
 
 // create the reusable sprite function
-MrHop.Platform.prototype.prepare = function(numTiles, x, y) {
+MrHop.Platform.prototype.prepare = function(numTiles, x, y, speed) {
 
+  // make alive
+  this.alive = true;
 
 
   var i = 0;
@@ -43,4 +45,5 @@ MrHop.Platform.prototype.prepare = function(numTiles, x, y) {
   // set physics properties
   this.setAll('body.immovable', true);
   this.setAll('body.allowGravity', false);
+  this.setAll('body.velocity.x', -speed);
 };
