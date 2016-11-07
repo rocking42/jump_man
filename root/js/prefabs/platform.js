@@ -47,3 +47,17 @@ MrHop.Platform.prototype.prepare = function(numTiles, x, y, speed) {
   this.setAll('body.allowGravity', false);
   this.setAll('body.velocity.x', -speed);
 };
+
+MrHop.Platform.prototype.kill = function() {
+  this.alive = false;
+  this.callAll('kill');
+
+  var sprites = [];
+  this.forEach(function(tile) {
+    sprites.push(tile);
+  }, this);
+
+  sprites.forEach(function(tile) {
+    this.floorPool.add(tile);
+  }, this);
+};

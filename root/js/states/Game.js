@@ -9,7 +9,7 @@ MrHop.GameState = {
 
     // pool of platforms
     this.platformPool1 = this.add.group();
-    this.platformpool2 = this.add.group();
+    this.platformPool2 = this.add.group();
 
     // gravity enable
     this.game.physics.arcade.gravity.y = 1000;
@@ -63,6 +63,7 @@ MrHop.GameState = {
     this.current_platform = new MrHop.Platform(this.game, this.floorPool, 8, 0, 280, this.levelSpeed);
     // create a pool of platforms and add those platforms to the group
     this.platformPool1.add(this.current_platform);
+
     //
     // this.platform2 = new MrHop.Platform(this.game, this.floorPool, 8, 400, 280, this.levelSpeed);
     // this.platformPool1.add(this.platform2);
@@ -72,8 +73,10 @@ MrHop.GameState = {
     // this.add.existing(platform);
     //
     this.current_platformI1 = new MrHop.PlatformInverse(this.game,this.floorPool2, 12, 0, 40, this.levelSpeed);
-    this.platformPool1.add(this.current_platformI1);
+
     //
+    this.platformPool2.add(this.current_platformI1);
+
     // this.platformI2 = new MrHop.PlatformInverse(this.game,this.floorPool2, 12, 560, 40, this.levelSpeed);
     // this.platformPool1.add(this.platformI2);
     // this.platformPool2.add(this.platformI2);
@@ -86,6 +89,23 @@ MrHop.GameState = {
       this.game.physics.arcade.collide(this.player2, platform);
       this.game.physics.arcade.collide(this.player, platform);
       // this.game.physics.arcade.collide(this.player3, platform);
+
+      // check if platform needs to be killed
+      if(platform.length && platform.children[platform.length - 1].right < 0) {
+        platform.kill();
+      }
+
+    }, this);
+
+    this.platformPool2.forEachAlive(function(platform, index) {
+      this.game.physics.arcade.collide(this.player2, platform);
+      this.game.physics.arcade.collide(this.player, platform);
+      // this.game.physics.arcade.collide(this.player3, platform);
+
+      // check if platform needs to be killed
+      if(platform.length && platform.children[platform.length - 1].right < 0) {
+        platform.kill();
+      }
 
     }, this);
     // checks that the player is touching the ground before increasing x
@@ -308,13 +328,13 @@ MrHop.GameState = {
 
   },
   createPlatformI: function() {
-    var nextIPlatformdata = this.levelData.platformsI[this.currentIndex];
+    var nextIPlatformdata = this.levelData.platformsI[this.currentIndexI];
 
     if(nextIPlatformdata) {
       console.log("hello");
-      this.current_platformI1 = new MrHop.PlatformInverse(this.game, this.floorPool, nextIPlatformdata.numTiles, this.game.world.width + nextIPlatformdata.separation, nextIPlatformdata.y, this.levelSpeed );
+      this.current_platformI1 = new MrHop.PlatformInverse(this.game, this.floorPool2, nextIPlatformdata.numTiles, this.game.world.width + nextIPlatformdata.separation, nextIPlatformdata.y, this.levelSpeed );
 
-      this.platformPool1.add(this.current_platformI1);
+      this.platformPool2.add(this.current_platformI1);
 
       this.currentIndexI++;
     }
