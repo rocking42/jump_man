@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.webapp",
       "src": "",
       "projectGuid": "2510ddeb-ca77-4e0f-b6aa-7c311a61acb1",
-      "lastModifiedDate": 1478478149911,
+      "lastModifiedDate": 1478614262510,
       "creationDate": 1478478142858
     },
     "gameAssetDirectory": "asset",
@@ -48,9 +48,9 @@
           "android-signed": true
         },
         "isActive_": true,
-        "certificateId_": "",
+        "certificateId_": "oGZUSGuLTkmxh66orUOU5A2",
         "appName_": "Jump_it",
-        "appID_": "not.yet.specified",
+        "appID_": "com.jump.man.besty",
         "appAccess_": {
           "mode": "whitelist",
           "network": [

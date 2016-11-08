@@ -1,15 +1,45 @@
 {
-  "categorization": {},
+  "categorization": {
+    "type": "GAME",
+    "category": "Arcade"
+  },
   "description": {
     "texts": {
-      "title": "",
-      "features": []
+      "title": "Jump man",
+      "features": [
+        "Endless runner"
+      ],
+      "short-description": "Testing google play but fun game",
+      "full-description": "Simple jump game made using phaser.",
+      "keywords": "runner, endless, alien",
+      "recent-changes": "",
+      "privacy-policy": "",
+      "eula": ""
     },
     "images": {
-      "screenshots": []
+      "screenshots": [
+        "../../../../screenshot.png",
+        "../../../../screenshot.png",
+        "../../../../screenshot.png"
+      ],
+      "app-icon-small": "../../../../logo.png",
+      "app-icon": "../../../../logo2.png",
+      "small-promo": "",
+      "large-promo": ""
     },
-    "videos": {}
+    "videos": {
+      "video-url": ""
+    }
   },
-  "packages": {},
-  "support": {}
+  "packages": {
+    "apk-file": "../../../../Downloads/jump-it.cordova.crosswalk.201611081118/cordova_project-x86.android.20161108141322.apk",
+    "zip-xdk-compliant": false,
+    "zip-file": "",
+    "secondary-apk-file": ""
+  },
+  "support": {
+    "email": "nedpike3@gmail.com",
+    "website": "https://stormy-headland-85825.herokuapp.com/"
+  },
+  "testing-instructions": "Test app for google play"
 }
