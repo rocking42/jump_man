@@ -27,29 +27,18 @@ MrHop.GameState = {
     this.levelSpeed = 200;
   },
   create: function() {
-    this.background = this.game.add.sprite('background', 0, 0);
-    this.background.scale.setTo(0.1);
-
-
+    this.background = this.game.add.sprite(0, 0, 'background');
+    this.background.scale.setTo(0.47);
+    // create the first player scaling to the game and enabling physics
     this.player = this.add.sprite(100,230, 'bot', 4);
     this.player.anchor.setTo(0.5);
     this.player.scale.setTo(0.35);
     this.player.animations.add('walk',[10,11], 10, true);
     this.player.animations.play('walk');
     this.game.physics.arcade.enable(this.player);
+    // manually adjust the body box so extrmeities are not counted
     this.player.body.setSize(120, 155, 0, 50);
-  //   jellyfish.animations.add('swim', Phaser.Animation.generateFrameNames('blueJellyfish', 0, 32, '', 4), 30, true);
-  //  jellyfish.animations.play('swim');
-    // create the player
-    // this.player = this.add.sprite(50, 80, 'player');
-    // this.player.anchor.setTo(0.5);
-    // this.player.animations.add('running', [0, 1, 2, 3, 2, 1], 15, true);
-    // this.game.physics.arcade.enable(this.player);
-    // change player bounding box = x, y and the two origin points
-    // used for collision
-    // this.player.body.setSize(34, 60, 7, 5);
-    // this.player.play('running');
-    // create the second player
+    // create the second player the same except with new gravity and scale
     this.player2 = this.add.sprite(100, 200, 'player');
     this.player2.anchor.setTo(0.5);
     this.player2.scale.setTo(1, -1);
@@ -62,24 +51,13 @@ MrHop.GameState = {
     // hard code first platform
     this.current_platform = new MrHop.Platform(this.game, this.floorPool, 12, 0, 280, this.levelSpeed);
     // create a pool of platforms and add those platforms to the group
+    this.platformPool1.add(this.background);
     this.platformPool1.add(this.current_platform);
 
-    //
-    // this.platform2 = new MrHop.Platform(this.game, this.floorPool, 8, 400, 280, this.levelSpeed);
-    // this.platformPool1.add(this.platform2);
 
-    //
-    // var platform2 = new MrHop.Platform(this.game, this.floorPool, 6, 100, 240);
-    // this.add.existing(platform);
-    //
     this.current_platformI1 = new MrHop.PlatformInverse(this.game,this.floorPool2, 12, 0, 40, this.levelSpeed);
-
-    //
     this.platformPool2.add(this.current_platformI1);
-
-    // this.platformI2 = new MrHop.PlatformInverse(this.game,this.floorPool2, 12, 560, 40, this.levelSpeed);
-    // this.platformPool1.add(this.platformI2);
-    // this.platformPool2.add(this.platformI2);
+    // call the function which randomises tile generation
     this.loadLevel();
 
   },
@@ -88,25 +66,19 @@ MrHop.GameState = {
     this.platformPool1.forEachAlive(function(platform, index) {
       this.game.physics.arcade.collide(this.player2, platform);
       this.game.physics.arcade.collide(this.player, platform);
-      // this.game.physics.arcade.collide(this.player3, platform);
-
-      // check if platform needs to be killed
+      // check if platform needs to be killed by checking length more than one and its last element has left the screen
       if(platform.length && platform.children[platform.length - 1].right < 0) {
         platform.kill();
       }
-
     }, this);
 
     this.platformPool2.forEachAlive(function(platform, index) {
       this.game.physics.arcade.collide(this.player2, platform);
       this.game.physics.arcade.collide(this.player, platform);
-      // this.game.physics.arcade.collide(this.player3, platform);
-
       // check if platform needs to be killed
       if(platform.length && platform.children[platform.length - 1].right < 0) {
         platform.kill();
       }
-
     }, this);
     // checks that the player is touching the ground before increasing x
     if(this.player2.body.touching.up) {
@@ -124,8 +96,7 @@ MrHop.GameState = {
       //velocity does not change
       this.player.body.velocity.x = 0;
     }
-    console.log(Math.floor(this.game.input.y));
-    // adds the keyboard configuration will apply touch configuration soon
+    // checks whether selected is downn or the user is touching a cetain half of the screen
     if(this.cursors.left.isDown || (this.game.input.activePointer.isDown && this.game.input.y > (this.game.height/2))) {
       this.playerJump();
     }
@@ -145,14 +116,18 @@ MrHop.GameState = {
     if(this.current_platformI1.length && this.current_platformI1.children[this.current_platformI1.length - 1].right < this.game.world.width) {
       this.createPlatformI();
     }
+
+    if(this.player.y > 300 || this.player2.y < 0) {
+      this.gameOver();
+    }
   },
   // great for debugging
   render: function() {
     // used for dubugging bounding box
-    this.game.debug.body(this.player);
-    this.game.debug.body(this.player2);
+    // this.game.debug.body(this.player);
+    // this.game.debug.body(this.player2);
     // add the body info regarding selected
-    this.game.debug.bodyInfo(this.player2, 0, 30);
+    // this.game.debug.bodyInfo(this.player2, 0, 30);
   },
   playerJump:function() {
     if(this.player.body.touching.down) {
@@ -164,7 +139,7 @@ MrHop.GameState = {
       // true once peak jump is reached
       this.jumpPeaked1 = false;
       // the jumps value
-      this.player.body.velocity.y = -300;
+      this.player.body.velocity.y = -400;
     }
     // confirms player is jumping as well as not peaked
     else if(this.isJumping1 && !this.jumpPeaked1) {
@@ -191,7 +166,7 @@ MrHop.GameState = {
       this.isJumping2 = true;
       this.jumpPeaked2 = false;
 
-      this.player2.body.velocity.y = 300;
+      this.player2.body.velocity.y = 400;
     }
     else if(this.isJumping2 && !this.jumpPeaked2) {
       var distanceJumped = this.startJumpY + this.player2.y;
@@ -205,34 +180,28 @@ MrHop.GameState = {
     }
   },
   loadLevel: function() {
-
-    this.currentIndex = 0;
-    this.currentIndexI = 0;
-
+    // create rhe two styles of platforms
     this.createPlatform();
     this.createPlatformI();
   },
   createPlatform: function() {
     var nextPlatformdata = this.generatePlatform();
 
-
+    // check the randomised data
     if(nextPlatformdata) {
-      console.log("hi");
-
+      // add any killed off platforms to the group
       this.current_platform = this.platformPool1.getFirstDead();
-
+      // if there are no dead platforms create new
       if(!this.current_platform) {
         this.current_platform = new MrHop.Platform(this.game, this.floorPool, nextPlatformdata.numTiles, this.game.world.width + nextPlatformdata.separation, nextPlatformdata.y, this.levelSpeed );
       }
+      // if there is a dead one add it to the cycle
       else {
         this.current_platform.prepare(nextPlatformdata.numTiles, this.game.world.width + nextPlatformdata.separation, nextPlatformdata.y, this.levelSpeed );
       }
-
+      // finally add it to the pool
       this.platformPool1.add(this.current_platform);
-
-      // this.currentIndex++;
     }
-
   },
   createPlatformI: function() {
     var nextIPlatformdata = this.generatePlatformI();
@@ -248,18 +217,12 @@ MrHop.GameState = {
       else {
         this.current_platformI1.prepare(nextIPlatformdata.numTiles, this.game.world.width + nextIPlatformdata.separation, nextIPlatformdata.y, this.levelSpeed );
       }
-
-
-
       this.platformPool2.add(this.current_platformI1);
-
-      // this.currentIndexI++;
     }
   },
   generatePlatform: function() {
     var data = {};
-    console.log("happy1");
-    //distance from previously
+    //distance from previous tile
     var minSeparation = 60;
     var maxSeparation = 140;
     data.separation = minSeparation + Math.random() * (maxSeparation - minSeparation);
@@ -267,39 +230,33 @@ MrHop.GameState = {
     var minDiffY = -120;
     var maxDiffY = 120;
     data.y = 280 - (Math.random() * 80);
-    // data.y = Math.max(240, data.y);
-    // data.y = Math.min(this.game.world.height - 50, data.y);
-
-    //number of tiles
-    var minTiles = 1;
-    var maxTiles = 5;
-    data.numTiles= minTiles + Math.random() * (maxTiles - minTiles);
-
-
-    return data;
-  },
-  generatePlatformI: function() {
-    var data = {};
-    console.log("happy");
-    //distance from previously
-    var minSeparation = 60;
-    var maxSeparation = 100;
-    data.separation = minSeparation + Math.random() * (maxSeparation - minSeparation);
-    //y in regards to previous
-    var minDiffY = 0;
-    var maxDiffY = 0;
-    data.y = 40 + Math.random() * 40;
-    // data.y = this.current_platformI1.y + (minDiffY + Math.random() * (maxDiffY - minDiffY));
-    // data.y = Math.max(200, data.y);
-    // data.y = Math.min(this.game.world.height - 50, 40);
 
     //number of tiles
     var minTiles = 3;
     var maxTiles = 5;
     data.numTiles= minTiles + Math.random() * (maxTiles - minTiles);
 
+    return data;
+  },
+  generatePlatformI: function() {
+    var data = {};
+    //distance from previous tile
+    var minSeparation = 60;
+    var maxSeparation = 100;
+    data.separation = minSeparation + Math.random() * (maxSeparation - minSeparation);
+    var minDiffY = 0;
+    var maxDiffY = 0;
+    data.y = 40 + Math.random() * 40;
+
+    //number of tiles
+    var minTiles = 3;
+    var maxTiles = 5;
+    data.numTiles= minTiles + Math.random() * (maxTiles - minTiles);
 
     return data;
+  },
+  gameOver: function() {
+    this.state.start("Home");
   }
 
 };

@@ -45,6 +45,7 @@ MrHop.Platform.prototype.prepare = function(numTiles, x, y, speed) {
   // set physics properties
   this.setAll('body.immovable', true);
   this.setAll('body.allowGravity', false);
+  // moves the tile backwards
   this.setAll('body.velocity.x', -speed);
 };
 
