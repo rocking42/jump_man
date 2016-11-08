@@ -19,6 +19,10 @@ MrHop.PreloadState = {
     this.load.spritesheet('player', 'assets/images/player_spritesheet.png', 51, 67, 5, 2, 3);
     this.load.atlasJSONHash('bot', 'assets/images/player.png', 'assets/images/player.json');
     this.load.audio('coinSound', ['assets/audio/coin.ogg', 'assets/audio/coin.mp3']);
+    this.load.audio('jumpSound', ['assets/audio/phaseJump2.mp3'], ['assets/audio/phaseJump2.ogg']);
+    this.load.audio('deathSound', ['assets/audio/phaserDown3.mp3'], ['assets/audio/phaserDown3.ogg']);
+    this.load.audio('jumpSound2', ['assets/audio/phaserjump.mp3'], ['assets/audio/phaserjump.ogg']);
+    this.load.audio('soundtrack', ['assets/audio/soundtrack.mp3'], ['assets/audio/soundtrack.ogg']);
 
   },
   create: function() {

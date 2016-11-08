@@ -48,6 +48,15 @@ MrHop.GameState = {
     this.player2.body.setSize(34, 60, 7, 5);
     this.player2.play('running');
 
+    this.jump = this.add.audio('jumpSound');
+    this.jump2 = this.add.audio('jumpSound2');
+    this.death = this.add.audio('deathSound');
+    this.soundtrack = this.add.audio('soundtrack');
+    this.soundtrack.volume = 0.5;
+    this.soundtrack.play();
+    this.soundtrack.loop = true;
+
+
     // hard code first platform
     this.current_platform = new MrHop.Platform(this.game, this.floorPool, 12, 0, 280, this.levelSpeed);
     // create a pool of platforms and add those platforms to the group
@@ -99,6 +108,7 @@ MrHop.GameState = {
     // checks whether selected is downn or the user is touching a cetain half of the screen
     if(this.cursors.left.isDown || (this.game.input.activePointer.isDown && this.game.input.y > (this.game.height/2))) {
       this.playerJump();
+
     }
     else if(this.cursors.left.isUp || (this.game.input.activePointer.isUp && this.game.input.y > (this.game.height/2))) {
       this.isJumping1 = false;
@@ -132,6 +142,7 @@ MrHop.GameState = {
   playerJump:function() {
     if(this.player.body.touching.down) {
       console.log("hello");
+      this.jump.play();
       // starting point of the jump
       this.startJumpY = this.player.y;
       // keep track of the fact it is jumping
@@ -160,6 +171,7 @@ MrHop.GameState = {
   player2Jump: function() {
     if(this.player2.body.touching.up) {
       console.log("down");
+      this.jump2.play();
       // starting point of the jump
       this.startJumpY = this.player2.y;
       // keep track of the fact it is jumping
@@ -256,6 +268,7 @@ MrHop.GameState = {
     return data;
   },
   gameOver: function() {
+    this.soundtrack.stop();
     this.state.start("Home");
   }
 
