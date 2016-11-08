@@ -2,7 +2,7 @@ var MrHop = MrHop || {};
 
 MrHop.GameState = {
   init: function() {
-
+    this.timer = 0;
     // pool floors
     this.floorPool = this.add.group();
     this.floorPool2 = this.add.group();
@@ -27,8 +27,12 @@ MrHop.GameState = {
     this.levelSpeed = 200;
   },
   create: function() {
-    this.background = this.game.add.sprite(0, 0, 'background');
-    this.background.scale.setTo(0.47);
+    // this.background = this.game.add.sprite(0, 0, 'background');
+    // this.background.scale.setTo(0.47);
+    this.background = this.add.tileSprite(0,0, this.game.world.width, this.game.world.height, 'background');
+    this.background.tileScale.y = 0.35;
+    this.background.tileScale.x = 0.30;
+    this.background.autoScroll(-this.levelSpeed/6, 0);
     // create the first player scaling to the game and enabling physics
     this.player = this.add.sprite(100,230, 'bot', 4);
     this.player.anchor.setTo(0.5);
@@ -55,12 +59,17 @@ MrHop.GameState = {
     this.soundtrack.volume = 0.5;
     this.soundtrack.play();
     this.soundtrack.loop = true;
+    // moving water
+    this.water = this.add.tileSprite(0, this.game.world.height - 30, this.game.world.width, 30, 'water');
+    this.water.autoScroll(-this.levelSpeed/2, 0);
 
 
     // hard code first platform
     this.current_platform = new MrHop.Platform(this.game, this.floorPool, 12, 0, 280, this.levelSpeed);
     // create a pool of platforms and add those platforms to the group
     this.platformPool1.add(this.background);
+    this.platformPool1.add(this.water);
+
     this.platformPool1.add(this.current_platform);
 
 
@@ -69,8 +78,14 @@ MrHop.GameState = {
     // call the function which randomises tile generation
     this.loadLevel();
 
+
+
   },
+
   update: function() {
+
+    this.timer+= this.game.time.elapsed / 700;
+    console.log(this.timer);
     // iterate through the group of groups checking those alive so as to add collision to each player
     this.platformPool1.forEachAlive(function(platform, index) {
       this.game.physics.arcade.collide(this.player2, platform);
@@ -268,8 +283,9 @@ MrHop.GameState = {
     return data;
   },
   gameOver: function() {
+    var message = Math.floor(this.timer);
     this.soundtrack.stop();
-    this.state.start("Home");
+    this.state.start('Home', true, false, message);
   }
 
 };
