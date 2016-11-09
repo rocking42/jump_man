@@ -17,3 +17,5 @@ How to play:
 - Use the left arrow to control Billy and the right arrow to control Al.
 
 Play it now [Worlds Collide](https://rocking42.github.io)
+
+Or download it from [Google Play](https://play.google.com/store/apps/details?id=com.jump.man.besty) (currently only on certain tablet devices will release further compatibility soon).
